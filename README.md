@@ -14,3 +14,10 @@ This application allows the analysis of plant growth in environments with and wi
     ```sh
     pip install -r requirements.txt
     ```
+
+## Run Streamlit
+
+1. Run:
+    ```sh
+    streamlit run [file.py]
+    ```
