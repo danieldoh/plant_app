@@ -25,7 +25,11 @@ if 'aerosol_selection' not in st.session_state:
     st.session_state['aerosol_selection'] = aerosol_selection
 
 if 'pixel_value' not in st.session_state:
-    st.session_state['pixel_value'] = []
+    st.session_state['pixel_value'] = {
+        'width': [],
+        'cum_length': [],
+        'height': [],
+    }
 
 if 'coordinates' not in st.session_state:
     st.session_state['coordinates'] = (0, 0)
@@ -47,10 +51,28 @@ if uploadted_file is not None:
         key="pil",
     )
 
-    if value:
+    width = st.checkbox("Width", value=False)
+    cum_length = st.checkbox("Cumulative Height", value=False)
+    height = st.checkbox("Height", value=False)
 
-        st.session_state['pixel_value'].append([value['x'], value['y']])
+    if value and width:
 
-        st.write(st.session_state['pixel_value'])
+        if len(st.session_state['pixel_value']['width']) <= 2:
+            st.session_state['pixel_value']['width'].append([value['x'], value['y']])
+
+            st.write("Number of Pixel Clicked: ", len(st.session_state['pixel_value']['width']))
+
+            if len(st.session_state['pixel_value']['width']) == 2:
+                pix_1 = st.session_state['pixel_value']['width'][0]
+                pix_2 = st.session_state['pixel_value']['width'][1]
+                st.write("Two points are selected: ", pix_1, pix_2)
+                distance = two_points_distance(pix_1, pix_2)
+                st.write("Trunk Width: ", distance)
+        
+        width_reset = st.button("Reset Width")
+        if width_reset:
+            st.session_state['pixel_value']['width'] = []
+            st.write("Width is reset.")
+            
 
 
