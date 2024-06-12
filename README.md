@@ -1,2 +1,2 @@
-# plant_app
-This application allows to analyze the growth of plants in environments with and without aerosols.
+# Plant Analyzer Application
+This application allows the analysis of plant growth in environments with and without aerosols.
