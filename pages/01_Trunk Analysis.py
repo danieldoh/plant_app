@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_image_coordinates import streamlit_image_coordinates
 
 import cv2
+import time
 import numpy as np
 from PIL import Image
 from src.utils import two_points_distance
@@ -51,28 +52,44 @@ if uploadted_file is not None:
         key="pil",
     )
 
-    width = st.checkbox("Width", value=False)
-    cum_length = st.checkbox("Cumulative Height", value=False)
-    height = st.checkbox("Height", value=False)
+    mode = st.selectbox("Select the category", ["Width", "Cumulative Height", "Height"], index = None, placeholder="Select an option")
 
-    if value and width:
+    if mode == "Width":
 
-        if len(st.session_state['pixel_value']['width']) <= 2:
-            st.session_state['pixel_value']['width'].append([value['x'], value['y']])
-
-            st.write("Number of Pixel Clicked: ", len(st.session_state['pixel_value']['width']))
-
-            if len(st.session_state['pixel_value']['width']) == 2:
-                pix_1 = st.session_state['pixel_value']['width'][0]
-                pix_2 = st.session_state['pixel_value']['width'][1]
-                st.write("Two points are selected: ", pix_1, pix_2)
-                distance = two_points_distance(pix_1, pix_2)
-                st.write("Trunk Width: ", distance)
-        
         width_reset = st.button("Reset Width")
+        reset_message = st.empty()
+
         if width_reset:
             st.session_state['pixel_value']['width'] = []
-            st.write("Width is reset.")
+            reset_message.write("Resetting.")
+            time.sleep(2) 
+            reset_message.empty()
+        
+        if st.session_state['pixel_value']['width'] == []:
+            st.write("Click on the image to select two points to measure the width of the trunk.")
+
+        if value and not width_reset:
+            if len(st.session_state['pixel_value']['width']) <= 2:
+                st.session_state['pixel_value']['width'].append([value['x'], value['y']])
+
+                st.write("Number of Pixel Clicked: ", len(st.session_state['pixel_value']['width']))
+
+                if len(st.session_state['pixel_value']['width']) == 2:
+                    pix_1 = st.session_state['pixel_value']['width'][0]
+                    pix_2 = st.session_state['pixel_value']['width'][1]
+                    st.write("Two points are selected: ", pix_1, pix_2)
+                    distance = two_points_distance(pix_1, pix_2)
+                    st.write("Trunk Width: ", f"{distance * 0.00057} m")
+
+            if len(st.session_state['pixel_value']['width']) == 2:
+                st.write("Two points are already selected. Please reset the width to select new points.")
+    
+
+
+
+
+
+
             
 
 
