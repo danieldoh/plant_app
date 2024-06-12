@@ -6,7 +6,6 @@ import csv
 
 from PIL import Image
 from collections import Counter
-from colorthief import ColorThief
 import matplotlib.pyplot as plt
 import colorsys
 
