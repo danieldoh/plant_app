@@ -6,10 +6,12 @@ import time
 import numpy as np
 from PIL import Image
 from src.utils import two_points_distance
+from datetime import datetime
 
 st.set_page_config(
     page_title="Trunk Analysis",
     page_icon="🌱",
+    layout='wide',
 )
 
 st.title("Trunk Analysis")
@@ -27,7 +29,7 @@ if 'aerosol_selection' not in st.session_state:
 
 if 'pixel_value' not in st.session_state:
     st.session_state['pixel_value'] = {
-        'width': [],
+        'width': [[0,0]],
         'cum_length': [],
         'height': [],
     }
@@ -51,38 +53,49 @@ if uploadted_file is not None:
         use_column_width="always",
         key="pil",
     )
-
+    
     mode = st.selectbox("Select the category", ["Width", "Cumulative Height", "Height"], index = None, placeholder="Select an option")
+
+    with st.sidebar:
+        st.write(st.session_state['pixel_value']['width'])
 
     if mode == "Width":
 
-        width_reset = st.button("Reset Width")
-        reset_message = st.empty()
-
+        st.write("Instruction: Click on the image to select the two points.")
+        width_reset = st.button("Reset")
+        message_reset = st.empty()
+        
         if width_reset:
             st.session_state['pixel_value']['width'] = []
-            reset_message.write("Resetting.")
-            time.sleep(2) 
-            reset_message.empty()
-        
-        if st.session_state['pixel_value']['width'] == []:
-            st.write("Click on the image to select two points to measure the width of the trunk.")
+            message_reset.write("Resetting")
+
+            time.sleep(2)
+
+            message_reset.empty()
+            width_reset = False
 
         if value and not width_reset:
-            if len(st.session_state['pixel_value']['width']) <= 2:
+
+            if len(st.session_state['pixel_value']['width']) < 3:
                 st.session_state['pixel_value']['width'].append([value['x'], value['y']])
 
-                st.write("Number of Pixel Clicked: ", len(st.session_state['pixel_value']['width']))
+            if len(st.session_state['pixel_value']['width']) > 1:
+                st.write("Number of Pixel Clicked: ", len(st.session_state['pixel_value']['width'])-1)
+                st.write("Points Selected: ", st.session_state['pixel_value']['width'][1:])
 
-                if len(st.session_state['pixel_value']['width']) == 2:
-                    pix_1 = st.session_state['pixel_value']['width'][0]
-                    pix_2 = st.session_state['pixel_value']['width'][1]
-                    st.write("Two points are selected: ", pix_1, pix_2)
-                    distance = two_points_distance(pix_1, pix_2)
-                    st.write("Trunk Width: ", f"{distance * 0.00057} m")
-
-            if len(st.session_state['pixel_value']['width']) == 2:
+            if len(st.session_state['pixel_value']['width']) == 3:
+                pix_1 = st.session_state['pixel_value']['width'][-2]
+                pix_2 = st.session_state['pixel_value']['width'][-1]
+                distance = two_points_distance(pix_1, pix_2)
+                st.write("Trunk Width: ", f"{distance * 0.00057} m")
                 st.write("Two points are already selected. Please reset the width to select new points.")
+
+    
+    elif mode == "Cumulative Height":
+        st.session_state['pixel_value']['width'] = []
+        width_reset = False
+
+        st.write("Click on the image to select the base of the trunk.")
     
 
 
