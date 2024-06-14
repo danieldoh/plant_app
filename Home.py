@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_image_coordinates import streamlit_image_coordinates
 
-import cv2
 import numpy as np
 from PIL import Image
 
@@ -19,7 +18,8 @@ st.markdown(
     Welcome to the Plant Growth Analyzer! This app is designed to help you analyze the growth of your plants.
 
     Here are the features of this app:
-    - [ ] [Trunk Analysis](/Trunk Analysis)
+    - [ ] [Trunk Analysis](/Trunk_Analysis)
+    - [ ] [Leaf Analysis](/Leaf_Analysis)
 '''
 )
 
