@@ -9,17 +9,26 @@ st.set_page_config(
     page_icon="🌱",
 )
 
-st.title("Plant Growth Analyzer")
+st.title("🪴 Plant Growth Analyzer")
 
 st.markdown(
     '''
-    # Hello!
+    ## 👋  Hello!
 
-    Welcome to the Plant Growth Analyzer! This app is designed to help you analyze the growth of your plants.
+    ##### Welcome to the Plant Growth Analyzer!
+    ######  This app is designed to help you analyze the growth of your plants.
 
-    Here are the features of this app:
-    - [ ] [Trunk Analysis](/Trunk_Analysis)
-    - [ ] [Leaf Analysis](/Leaf_Analysis)
+    - ## [Trunk Analysis](/Trunk_Analysis)
+        - ##### Width Calculation
+        - ##### Cumulative Height Calculation
+        - ##### Height Calculation
+        - ##### Tilt Angle Calculation
+        - ##### Leaf Tilt Angle Calculation
+    - ## [Leaf# Analysis](/Leaf_Analysis)
+        - ##### Width Calculation
+        - ##### Length Calculation
+        - ##### Area Calculation
+        - ##### Venation Analysis
 '''
 )
 
