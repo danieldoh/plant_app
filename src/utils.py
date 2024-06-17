@@ -4,11 +4,13 @@ import math
 import time
 import csv
 import cv2
-
-from PIL import Image
-from collections import Counter
 import matplotlib.pyplot as plt
 import colorsys
+
+from PIL import Image, ImageFilter, ImageEnhance, ImageDraw
+from skimage import filters
+from skimage.draw import polygon
+from collections import Counter
 
 def two_points_calculation(value, ratio, mode, mode_selected, calculated_values):
     reset = st.button("RESET")
@@ -146,6 +148,55 @@ def points_area_calculation(value, ratio, mode, mode_selected, calculated_values
             st.session_state[calculated_values][mode] = cv2.contourArea(pts) * (ratio**2)
             st.write(f"{mode_selected}: ", f"{st.session_state[calculated_values][mode]} m")
             st.write(f"{mode_selected} calcuation is finished. Please press the RESET button to select new points.")
+
+        if len(st.session_state[mode]) > 1:
+            st.write("Number of Pixel Clicked: ", len(st.session_state[mode])-1)
+            st.write("Points Selected: ", st.session_state[mode][1:])
+
+def points_venation_analysis(value, mode, mode_selected, calculated_values, image):
+    reset = st.button("RESET")
+    start = st.button("START")
+    end = st.button("END")
+
+    message_reset = st.empty()
+
+    if start:
+        st.session_state[mode] = []
+        st.session_state[calculated_values][mode] = 0.0
+        st.write("👉 Started.")
+
+    if reset:
+        st.session_state[mode] = []
+        st.session_state[calculated_values][mode] = 0.0
+        message_reset.write("Resetting")
+
+        time.sleep(2)
+
+        message_reset.empty()
+        reset = False
+        start = False
+        end = False
+
+    if value and not reset:
+        if not end:
+            st.session_state[mode].append((value['x'], value['y']))
+
+        if end:
+            st.write("🔚 Ended.")
+            pts = tuple(st.session_state[mode][1:])
+            clone = np.array(image)
+            height, width, _ = clone.shape
+            mask = Image.new('L', (width, height), 0)
+            draw = ImageDraw.Draw(mask)
+            #draw.ellipse((140, 50, 260, 170), fill=1)
+            draw.polygon(pts, outline=1, fill=255)
+
+            masked_img = Image.composite(image, Image.new('RGB', image.size, (0,0,0)), mask)
+            edges = masked_img.convert('L').filter(ImageFilter.FIND_EDGES)
+            #enhancer = ImageEnhance.Contrast(edges)
+            #img_edges_contrast = enhancer.enhance(2.0)
+            st.image(edges, use_column_width=True)
+            st.write(f"{mode_selected} analysis is completed. Please press the RESET button to select new points.")
 
         if len(st.session_state[mode]) > 1:
             st.write("Number of Pixel Clicked: ", len(st.session_state[mode])-1)

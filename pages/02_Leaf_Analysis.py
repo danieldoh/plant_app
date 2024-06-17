@@ -1,13 +1,13 @@
 import streamlit as st
 from streamlit_image_coordinates import streamlit_image_coordinates
-
 import io
+import cv2
 import time
 import numpy as np
 from PIL import Image
-from src.utils import two_points_calculation, points_area_calculation 
 from datetime import datetime
 
+from src.utils import two_points_calculation, points_area_calculation, points_venation_analysis
 ### Page Configurations ###
 st.set_page_config(
     page_title="Leaf Analysis",
@@ -49,6 +49,7 @@ ratio = 0.00023
 if uploaded_file is not None:
     ### Image Display ###
     img_pil = Image.open(io.BytesIO(uploaded_file.read()))
+    image = np.array(img_pil)
 
     value = streamlit_image_coordinates(
         img_pil,
@@ -63,12 +64,13 @@ if uploaded_file is not None:
     st.write(f"Area: {st.session_state['calculated_values']['area']} m^2")
 
     ### Mode Selection ###
-    mode_selected = st.selectbox("Select the category", ["Width", "Length", "Area"], index = None, placeholder="Select an option")
+    mode_selected = st.selectbox("Select the category", ["Width", "Length", "Area", "Venation"], index = None, placeholder="Select an option")
 
     ### Calculation ###
     if mode_selected == "Width":
         st.session_state['length'] = []
         st.session_state['area'] = []
+        st.session_state['venation'] = []
 
         st.write("🖐️ Click on the image to select the two points for the width.")
         two_points_calculation(value, ratio, 'width', mode_selected, "calculated_values")
@@ -76,6 +78,7 @@ if uploaded_file is not None:
     elif mode_selected == "Length":
         st.session_state['width'] = []
         st.session_state['area'] = []
+        st.session_state['venation'] = []
 
         st.write("🖐️ Click on the image to select the two points for the length.")
         two_points_calculation(value, ratio, 'length', mode_selected, "calculated_values")
@@ -83,7 +86,16 @@ if uploaded_file is not None:
     elif mode_selected == "Area":
         st.session_state['width'] = []
         st.session_state['length'] = []
+        st.session_state['venation'] = []
 
         st.write("🖐️ Click on the image to select the points for the area.")
         # cv2.contoureArea uses shoe-lace formula to calculate the area
         points_area_calculation(value, ratio, 'area', mode_selected, "calculated_values")
+    
+    elif mode_selected == "Venation":
+        st.session_state['width'] = []
+        st.session_state['length'] = []
+        st.session_state['area'] = []
+
+        st.write("🖐️ Click on the image to select the points for the venation.")
+        points_venation_analysis(value, 'venation', mode_selected, "calculated_values", img_pil)
