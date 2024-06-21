@@ -146,8 +146,59 @@ def points_area_calculation(value, ratio, mode, mode_selected, calculated_values
             pts = np.array(st.session_state[mode][1:], dtype=np.int32)
             pts = pts.reshape((-1, 1, 2))
             st.session_state[calculated_values][mode] = cv2.contourArea(pts) * (ratio**2)
-            st.write(f"{mode_selected}: ", f"{st.session_state[calculated_values][mode]} m")
+            st.write(f"{mode_selected}: ", f"{st.session_state[calculated_values][mode]} m^2")
             st.write(f"{mode_selected} calcuation is finished. Please press the RESET button to select new points.")
+
+        if len(st.session_state[mode]) > 1:
+            st.write("Number of Pixel Clicked: ", len(st.session_state[mode])-1)
+            st.write("Points Selected: ", st.session_state[mode][1:])
+
+def points_surface_area_calculation(value, ratio, mode, mode_selected, calculated_values, attempt):
+    reset = st.button("RESET")
+    start = st.button("START")
+    end = st.button("END")
+
+    message_reset = st.empty()
+
+    if start:
+        end == False
+        st.write("👉 Started.")
+
+    if reset:
+        st.session_state[mode] = []
+        st.session_state[calculated_values][mode] = 0.0
+        message_reset.write("Resetting")
+
+        time.sleep(2)
+
+        message_reset.empty()
+        reset = False
+        start = False
+        end = False
+
+    if value and not reset:
+        if not end:
+            st.session_state[mode].append([value['x'], value['y']])
+
+        if end:
+            st.write("🔚 Ended.")
+            pix_1 = st.session_state[mode][1]
+            pix_2 = st.session_state[mode][2]
+            diameter = two_points_distance(pix_1, pix_2) * ratio
+            
+            temp_height = 0.0
+            for i in range(3, len(st.session_state[mode])-1):
+                pix_1 = st.session_state[mode][i]
+                pix_2 = st.session_state[mode][i+1]
+                temp_height += (two_points_distance(pix_1, pix_2) * ratio)
+            st.session_state[calculated_values][mode] += math.pi * diameter * temp_height
+            st.write(f"{mode_selected}: ", f"{st.session_state[calculated_values][mode]} m^2")
+            if st.session_state[attempt] == 1:
+                st.write(f"Attempt {st.session_state[attempt]} is finished. Press START button again to continue.")
+                st.session_state[attempt] += 1
+                st.session_state[mode] = []
+            else:
+                st.write(f"{mode_selected} calcuation is finished.  press the RESET button to select new points.")
 
         if len(st.session_state[mode]) > 1:
             st.write("Number of Pixel Clicked: ", len(st.session_state[mode])-1)
