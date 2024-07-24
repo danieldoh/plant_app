@@ -14,25 +14,19 @@ st.title("💾 Data History")
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 ratio_df = conn.read(
-    worksheet="ratio"
+    worksheet="ratio",
+    ttl="0m",
 )
 trunk_df = conn.read(
-    worksheet="trunk"
+    worksheet="trunk",
+    ttl="0m",
 )
 leaf_df = conn.read(
-    worksheet="leaf"
+    worksheet="leaf",
+    ttl="0m",
 )
 
 st.subheader("Ratio Data")
-
-'''new_row = {"date": "2024/7/25", "no_aerosol_top_ratio": 0.00057, "aerosol_top_ratio": 0.00057, "no_aerosol_side_ratio": 0.00057, "aerosol_side_ratio": 0.00057}
-ratio_df = ratio_df.append(new_row, ignore_index=True)
-
-conn.update(
-    worksheet="ratio",
-    data=ratio_df
-)'''
-
 st.write(ratio_df)
 
 st.subheader("Trunk Data")

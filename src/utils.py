@@ -164,6 +164,7 @@ def points_surface_area_calculation(value, ratio, mode, mode_selected, calculate
     if start:
         end == False
         st.write("👉 Started.")
+        st.session_state[mode] = []
 
     if reset:
         st.session_state[mode] = []
@@ -293,3 +294,33 @@ def angle_calculation(p1, p2, p3):
     angle_deg = np.degrees(angle_rad)
 
     return angle_deg
+
+def pixel_ratio_calculation(value, real_length, mode, mode_selected, calculated_values):
+    reset = st.button("RESET")
+    message_reset = st.empty()
+
+    if reset:
+        st.session_state[mode] = []
+        st.session_state[calculated_values][mode] = 0.0
+        message_reset.write("Resetting")
+
+        time.sleep(2)
+
+        message_reset.empty()
+        reset = False
+
+    if value and not reset:
+        if len(st.session_state[mode]) < 3:
+            st.session_state[mode].append([value['x'], value['y']])
+
+        if len(st.session_state[mode]) == 3:
+            pix_1 = st.session_state[mode][-2]
+            pix_2 = st.session_state[mode][-1]
+            pix_distance = two_points_distance(pix_1, pix_2)
+            st.session_state[calculated_values][mode] = st.session_state[real_length] / pix_distance
+            st.write(f"Aerosol Top Ratio: {st.session_state[calculated_values][mode]}")
+            st.write(f"{mode_selected} calculation is finished. Please press the RESET button to select new points.")
+
+        if len(st.session_state[mode]) > 1:
+            st.write("Number of Pixel Clicked: ", len(st.session_state[mode])-1)
+            st.write("Points Selected: ", st.session_state[mode][1:])
