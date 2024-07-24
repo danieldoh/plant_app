@@ -11,6 +11,7 @@ from PIL import Image, ImageFilter, ImageEnhance, ImageDraw
 from skimage import filters
 from skimage.draw import polygon
 from collections import Counter
+from streamlit_image_coordinates import streamlit_image_coordinates
 
 def two_points_calculation(value, ratio, mode, mode_selected, calculated_values):
     reset = st.button("RESET")
@@ -234,19 +235,32 @@ def points_venation_analysis(value, mode, mode_selected, calculated_values, imag
 
         if end:
             st.write("🔚 Ended.")
-            pts = tuple(st.session_state[mode][1:])
-            clone = np.array(image)
-            height, width, _ = clone.shape
-            mask = Image.new('L', (width, height), 0)
-            draw = ImageDraw.Draw(mask)
+            mask = np.zeros_like(image)
+            pts = np.array(st.session_state[mode][1:], dtype=np.int32)
+            pts = pts - 100
+            cv2.fillPoly(mask, [pts], (255, 255, 255))
+            result = cv2.bitwise_and(image, mask)
+            gray = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
+            blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+            edges = cv2.Canny(blurred, 10, 10)
+            #pts = tuple(st.session_state[mode][1:])
+            #clone = np.array(image)
+            #height, width, _ = clone.shape
+            #mask = Image.new('L', (width, height), 0)
+            #draw = ImageDraw.Draw(mask)
             #draw.ellipse((140, 50, 260, 170), fill=1)
-            draw.polygon(pts, outline=1, fill=255)
+            #draw.polygon(pts, outline=1, fill=255)
 
-            masked_img = Image.composite(image, Image.new('RGB', image.size, (0,0,0)), mask)
-            edges = masked_img.convert('L').filter(ImageFilter.FIND_EDGES)
+            #masked_img = Image.composite(image, Image.new('RGB', image.size, (0,0,0)), mask)
+            #edges = masked_img.convert('L').filter(ImageFilter.FIND_EDGES)
             #enhancer = ImageEnhance.Contrast(edges)
             #img_edges_contrast = enhancer.enhance(2.0)
-            st.image(edges, use_column_width=True)
+            #st.image(edges, use_column_width=True)
+            venation = streamlit_image_coordinates(
+                edges,
+                use_column_width="always",
+                key="edges",
+            )
             st.write(f"{mode_selected} analysis is completed. Please press the RESET button to select new points.")
 
         if len(st.session_state[mode]) > 1:

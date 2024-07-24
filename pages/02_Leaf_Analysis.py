@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_image_coordinates import streamlit_image_coordinates
+from streamlit_gsheets import GSheetsConnection
 
 import io
 import cv2
@@ -9,6 +10,7 @@ from PIL import Image
 from datetime import datetime
 
 from src.utils import two_points_calculation, points_area_calculation, points_venation_analysis
+
 ### Page Configurations ###
 st.set_page_config(
     page_title="Leaf Analysis",
@@ -17,6 +19,7 @@ st.set_page_config(
 )
 
 st.title("🌿 Leaf Analysis")
+conn = st.connection("gsheets", type=GSheetsConnection)
 
 ### Aerosol Selection ###
 aerosol_selection = st.selectbox("Select aerosol condition", ["Aerosol", "No Aerosol"], index = None, placeholder="Select an option")
@@ -43,6 +46,9 @@ if 'length' not in st.session_state:
 if 'area' not in st.session_state:
     st.session_state['area'] = [[0,0]]
 
+if 'venation' not in st.session_state:
+    st.session_state['venation'] = [[0,0]]
+
 ### File Upload ###
 uploaded_file = st.file_uploader("Choose an image file to be analyzed", type=["jpg", "jpeg", "png"])
 ratio = 0.00023
@@ -53,7 +59,7 @@ if uploaded_file is not None:
     image = np.array(img_pil)
 
     value = streamlit_image_coordinates(
-        img_pil,
+        image,
         use_column_width="always",
         key="pil",
     )
@@ -99,4 +105,4 @@ if uploaded_file is not None:
         st.session_state['area'] = []
 
         st.write("🖐️ Click on the image to select the points for the venation.")
-        points_venation_analysis(value, 'venation', mode_selected, "calculated_values", img_pil)
+        points_venation_analysis(value, 'venation', mode_selected, "calculated_values", image)

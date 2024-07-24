@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "plant-app-430409",
+  "private_key_id": "b2b2b7629876f75baecbc09bf501b86acf85d300",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCz9HoZDW8eg+IJ\nbRQcl7ObGus1tPCSfoJlEUnEwj9EMeCMw0ZQ2o8nKANnYoWN7AZyXQSowfbkwdu9\nU92ZbklCqBIwqV5OALZppOYmzaQRRI4adu1l6ELwacfvAbtNPNCsvLsSmykO1su6\nIcstNg9fHRICKQF0r20mvXSexxIVKSAoJC/SeVyJxz+2w0q5D72pVgusWkitBBLM\ngFav34CVJETWl1A47WGwAkJ5ZQJ8D8xaU8gvJ//c10tNTS3mf9kwnhNbn8WCjM26\nRU/jeyq8lV3sQSw8hKSt1/RR8idnN7RYVCzIaL4gwsVT+6sXTZZVCZiyXT0rSq4q\nylHdwDA3AgMBAAECggEACSXW5RohOXBj163TVWbCyxIxvb+ucQv8Te30jYuAUtOk\nQhOVKfwKRefLUICaIG5Mn5ip6Xg+uD9Aj93JCIkqMTjA//dEI3v2yeUHjBZtDjGp\ndZ/xDnqhmH4QG06/ujvqsbVAX0BC9I2nupUIMoqqel/McA6sk8VtK4h6+q1M9oVU\nS0f3oHCZekv943eGsOXTCpuJafXLu2I2nHCesOmZ6ZtQ+wEf2+jc/y3IE0tTay+j\nDrSg4IeUcvjpEyOAD+h3x3tIAVeCElwtfTwczlMJ1MItU9dKnjRGbvgHKwxmHpmj\nayB6QeyV0bInqb8MYFxdPoXHXZIL7GdW3hFG0jXQ6QKBgQDm71yCaz+aEnZXNSGu\n6QZ9CZ9mpabhDzH+kTzbXIpCUC4nGbyuW7JzIfSgnc+lSAXT5pTV0eiRcND9c5aV\nWtDhiXSpPmvlFMs+3Oqd1PWYNSMMNxH8LBt1K+yjdMutlExWA5YRmRP66Z4c02/K\nEatMqa7w0YF8VxUuqmzVb81o3wKBgQDHfJyTcAuLm9GHJoC/Fs6C3fz0IrGVjesh\nSGye5qfS3ch3FKNkqB14VHBHN2rkcdqxnZxSrIONuy7VtCuIzM4S+Wqxags7172m\nk8UecpUVI1vf5yk8Uh6F0i8UiWztZQ23LcDN90lo3Z+7X99IJrwFmIaoFQCtKUDP\nu150hAerqQKBgQCP6bCj0cQT9tdqp0CzaKJTf5CnfinN7RNByi67oSLECoWIdmB/\n48MEPq/c/Btvq799+x7bVPFy2XRTzhmUP8EWG/vokG7alqfGKBPJgfH/BXYu4Y7C\nsJX34gSZJGrdZCJiI9/8XYH3BmkzG4x5x6MRpljP2C+yVe5sY2ZpaEAAzwKBgQCH\nKRMdgmkQKn8IxzmsP1Okr6vX7jnMTt/lKSEPeNB0uvg8VqtuY8mz4eJBHnc6WToH\n5fYoveJUgWL2QKDOi5WEnaGAm40I+t/woWaJfrEsJUz2o7T4vdsYaJSloYdAQZvN\nZR6hbs86Ug8L8aVjSXtTf0idUb2nla/oD9ersllQIQKBgD968l1KNdflnI+6i7Tx\njZZQzSEnEWhIOMSUk0CaG747x+urOGhjmzLAzrXKVnWzuVLZCZt570E5JILULBeN\nzkM2muO+YyF+0LJ2R7diHxguBJHOYc17f2YyOTgJK4QeJc54ndu6yhO7qmX2iNDF\nz+KBB3ykmvaeXOsWdQtYyKRf\n-----END PRIVATE KEY-----\n",
+  "client_email": "plant-app-gsheets-access@plant-app-430409.iam.gserviceaccount.com",
+  "client_id": "109766895627466384052",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/plant-app-gsheets-access%40plant-app-430409.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

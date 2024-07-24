@@ -1,11 +1,14 @@
 import streamlit as st
 from streamlit_image_coordinates import streamlit_image_coordinates
+from streamlit_gsheets import GSheetsConnection
 
 import io
+import cv2
 import time
 import numpy as np
 from PIL import Image
 from datetime import datetime
+
 from src.utils import two_points_calculation, three_points_angle_calculation, points_distance_calculation, points_surface_area_calculation
 
 ### Page Configurations ###
@@ -16,6 +19,7 @@ st.set_page_config(
 )
 
 st.title("🌳 Trunk Analysis")
+conn = st.connection("gsheets", type=GSheetsConnection)
 
 ### Aerosol Selection ###
 aerosol_selection = st.selectbox("Select aerosol condition", ["Aerosol", "No Aerosol"], index = None, placeholder="Select an option")
@@ -31,7 +35,7 @@ if 'aerosol_selection' not in st.session_state:
 
 if "calculated_values" not in st.session_state:
     st.session_state["calculated_values"] = {
-        "width": 0.0,
+        "diameter": 0.0,
         "cum_height": 0.0,
         "height": 0.0,
         "surface_area": 0.0,
@@ -39,8 +43,8 @@ if "calculated_values" not in st.session_state:
         "leaf_angle": 0.0
     }
 
-if 'width' not in st.session_state:
-    st.session_state['width'] = [[0,0]]
+if 'diameter' not in st.session_state:
+    st.session_state['diameter'] = [[0,0]]
 
 if 'height' not in st.session_state:
     st.session_state['height'] = [[0,0]]
@@ -76,7 +80,7 @@ if uploaded_file is not None:
 
     ### Value Calculated ###
     st.write("📏 Calculated Values 📏")
-    st.write(f"Width: {st.session_state['calculated_values']['width']} m")
+    st.write(f"Diamter: {st.session_state['calculated_values']['diameter']} m")
     st.write(f"Cumulative Height: {st.session_state['calculated_values']['cum_height']} m")
     st.write(f"Height: {st.session_state['calculated_values']['height']} m")
     st.write(f"Surface Area: {st.session_state['calculated_values']['surface_area']} m^2")
@@ -84,10 +88,10 @@ if uploaded_file is not None:
     st.write(f"Leaf Tilt Angle: {st.session_state['calculated_values']['leaf_angle']} degrees")
 
     ### Mode Selection ###
-    mode_selected = st.selectbox("Select the category", ["Width", "Cumulative Height", "Height", "Surface Area", "Tilt Angle", "Leaf Tilt Angle"], index = None, placeholder="Select an option")
+    mode_selected = st.selectbox("Select the category", ["Diameter", "Cumulative Height", "Height", "Surface Area", "Tilt Angle", "Leaf Tilt Angle"], index = None, placeholder="Select an option")
 
     ### Calculation ###
-    if mode_selected == "Width":
+    if mode_selected == "Diameter":
         st.session_state['height'] = []
         st.session_state['cum_height'] = []
         st.session_state['surface_area'] = []
@@ -99,10 +103,10 @@ if uploaded_file is not None:
         # value = streamlit_image_coordinates
         # mode = 'width'
         # mode_selected = 'Width'
-        two_points_calculation(value, ratio, 'width', mode_selected, 'calculated_values')
+        two_points_calculation(value, ratio, 'diameter', mode_selected, 'calculated_values')
 
     elif mode_selected == "Cumulative Height":
-        st.session_state['width'] = []
+        st.session_state['diameter'] = []
         st.session_state['height'] = []
         st.session_state['surface_area'] = []
         st.session_state['angle'] = []
@@ -118,7 +122,7 @@ if uploaded_file is not None:
         
 
     elif mode_selected == "Height":
-        st.session_state['width'] = []
+        st.session_state['diameter'] = []
         st.session_state['cum_height'] = []
         st.session_state['leaf_angle'] = []
         st.session_state['surface_area'] = []
@@ -132,7 +136,7 @@ if uploaded_file is not None:
         two_points_calculation(value, ratio, 'height', 'Height', 'calculated_values') 
     
     elif mode_selected == "Surface Area":
-        st.session_state['width'] = []
+        st.session_state['diameter'] = []
         st.session_state['cum_height'] = []
         st.session_state['height'] = []
         st.session_state['angle'] = []
@@ -146,7 +150,7 @@ if uploaded_file is not None:
         points_surface_area_calculation(value, ratio, 'surface_area', 'Surface Area', 'calculated_values', 'attempt')
 
     elif mode_selected == "Tilt Angle":
-        st.session_state['width'] = []
+        st.session_state['diameter'] = []
         st.session_state['cum_height'] = []
         st.session_state['height'] = []
         st.session_state['surface_area'] = []
@@ -161,7 +165,7 @@ if uploaded_file is not None:
         three_points_angle_calculation(value, 'angle', 'Tilt Angle', 'calculated_values')
     
     elif mode_selected == "Leaf Tilt Angle":
-        st.session_state['width'] = []
+        st.session_state['diameter'] = []
         st.session_state['cum_height'] = []
         st.session_state['height'] = []
         st.session_state['surface_area'] = []
