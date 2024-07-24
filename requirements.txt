@@ -3,3 +3,4 @@ opencv-python
 numpy
 streamlit-image-coordinates
 matplotlib
+SQLAlchemy==1.4.0
