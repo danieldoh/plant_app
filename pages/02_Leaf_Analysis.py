@@ -3,8 +3,6 @@ from streamlit_image_coordinates import streamlit_image_coordinates
 from streamlit_gsheets import GSheetsConnection
 
 import io
-import cv2
-import time
 import numpy as np
 from PIL import Image
 from datetime import datetime
