@@ -2,12 +2,10 @@ import streamlit as st
 import numpy as np
 import math
 import time
-import csv
-import cv2
 import matplotlib.pyplot as plt
-import colorsys
 
 from PIL import Image, ImageFilter, ImageEnhance, ImageDraw
+from scipy.ndimage import convolve
 from skimage import filters
 from skimage.draw import polygon
 from collections import Counter
@@ -145,8 +143,15 @@ def points_area_calculation(value, ratio, mode, mode_selected, calculated_values
         if end:
             st.write("🔚 Ended.")
             pts = np.array(st.session_state[mode][1:], dtype=np.int32)
-            pts = pts.reshape((-1, 1, 2))
-            st.session_state[calculated_values][mode] = cv2.contourArea(pts) * (ratio**2)
+            #pts = pts.reshape((-1, 1, 2))
+            n = len(pts)
+            area = 0
+            for i in range(n):
+                j = (i + 1) % n
+                area += pts[i][0] * pts[j][1]
+                area -= pts[j][0] * pts[i][1]
+            area = abs(area) / 2.0
+            st.session_state[calculated_values][mode] = area * (ratio**2)
             st.write(f"{mode_selected}: ", f"{st.session_state[calculated_values][mode]} m^2")
             st.write(f"{mode_selected} calcuation is finished. Please press the RESET button to select new points.")
 
@@ -236,32 +241,43 @@ def points_venation_analysis(value, mode, mode_selected, calculated_values, imag
 
         if end:
             st.write("🔚 Ended.")
-            mask = np.zeros_like(image)
-            pts = np.array(st.session_state[mode][1:], dtype=np.int32)
-            pts = pts - 100
-            cv2.fillPoly(mask, [pts], (255, 255, 255))
-            result = cv2.bitwise_and(image, mask)
-            gray = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
-            blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-            edges = cv2.Canny(blurred, 10, 10)
-            #pts = tuple(st.session_state[mode][1:])
-            #clone = np.array(image)
-            #height, width, _ = clone.shape
-            #mask = Image.new('L', (width, height), 0)
-            #draw = ImageDraw.Draw(mask)
-            #draw.ellipse((140, 50, 260, 170), fill=1)
-            #draw.polygon(pts, outline=1, fill=255)
+            #pts = np.array(st.session_state[mode][1:], dtype=np.int32)
+            #pts = pts - 100
+            #cv2.fillPoly(mask, [pts], (255, 255, 255))
+            #result = cv2.bitwise_and(image, mask)
+            #gray = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
+            #blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+            #edges = cv2.Canny(blurred, 10, 10)
+            gray_image = np.array(Image.fromarray(image).convert('L'))
+            height, width = gray_image.shape
+            mask = Image.new('L', (width, height), 0)
+            draw = ImageDraw.Draw(mask)
+
+            pts = [(x,y) for x,y in st.session_state[mode][1:]]
+            draw.polygon(pts, outline=1, fill=255)
+            mask = np.array(mask)
+
+            masked_image = np.multiply(gray_image, mask/255)
+
+            sobel_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+            sobel_y = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
+
+            edges_x = convolve(masked_image, sobel_x, mode='reflect')
+            edges_y = convolve(masked_image, sobel_y, mode='reflect')
+            edges = np.sqrt(edges_x**2 + edges_y**2)
+
+            edges = (edges / np.max(edges) * 255).astype(np.uint8)
 
             #masked_img = Image.composite(image, Image.new('RGB', image.size, (0,0,0)), mask)
             #edges = masked_img.convert('L').filter(ImageFilter.FIND_EDGES)
             #enhancer = ImageEnhance.Contrast(edges)
             #img_edges_contrast = enhancer.enhance(2.0)
-            #st.image(edges, use_column_width=True)
-            venation = streamlit_image_coordinates(
-                edges,
-                use_column_width="always",
-                key="edges",
-            )
+            st.image(edges, use_column_width=True)
+            #venation = streamlit_image_coordinates(
+            #    edges,
+            #    use_column_width="always",
+            #    key="edges",
+            #)
             st.write(f"{mode_selected} analysis is completed. Please press the RESET button to select new points.")
 
         if len(st.session_state[mode]) > 1:
