@@ -1,7 +1,6 @@
 import io
 import numpy as np
 import streamlit as st
-import pandas as pd
 from PIL import Image
 from datetime import datetime
 from streamlit_image_coordinates import streamlit_image_coordinates
